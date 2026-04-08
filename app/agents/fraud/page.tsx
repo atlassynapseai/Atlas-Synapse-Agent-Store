@@ -97,7 +97,7 @@ export default function FraudPage() {
   const risk = report ? RISK_CONFIG[report.risk_level] : null
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] font-[family-name:var(--font-geist-sans)]">
+    <div className="page-noise min-h-screen bg-[#0a0a0f] font-[family-name:var(--font-geist-sans)]">
       <header className="border-b border-white/10 px-8 py-5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <AtlasLogo href="/agents" />

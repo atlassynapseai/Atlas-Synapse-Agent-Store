@@ -3,6 +3,20 @@ import { type NextRequest, NextResponse } from 'next/server'
 
 const AUTH_PAGES = ['/auth', '/auth/login', '/auth/signup', '/agents/auth']
 
+function resolvePublicOrigin(request: NextRequest) {
+  const configuredUrl = process.env.NEXT_PUBLIC_APP_URL
+
+  if (!configuredUrl) {
+    return request.nextUrl.origin
+  }
+
+  try {
+    return new URL(configuredUrl).origin
+  } catch {
+    return request.nextUrl.origin
+  }
+}
+
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request })
 
@@ -34,7 +48,13 @@ export async function proxy(request: NextRequest) {
   const isAuthPage = AUTH_PAGES.includes(pathname) || pathname.startsWith('/agents/auth')
 
   if (user && isAuthPage) {
-    return NextResponse.redirect(new URL('/agents', request.url))
+    const nextParam = request.nextUrl.searchParams.get('next')
+    const nextPath = nextParam && nextParam.startsWith('/agents') && !nextParam.startsWith('/agents/auth')
+      ? nextParam
+      : '/agents'
+    const publicOrigin = resolvePublicOrigin(request)
+
+    return NextResponse.redirect(new URL(nextPath, publicOrigin))
   }
 
   return response

@@ -77,7 +77,7 @@ export default function CybersecurityPage() {
   const severity = report ? SEVERITY_CONFIG[report.severity_level] ?? SEVERITY_CONFIG.Informational : null
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] font-[family-name:var(--font-geist-sans)]">
+    <div className="page-noise min-h-screen bg-[#0a0a0f] font-[family-name:var(--font-geist-sans)]">
       {/* Header */}
       <header className="border-b border-white/10 px-8 py-5 flex items-center justify-between">
         <div className="flex items-center gap-3">

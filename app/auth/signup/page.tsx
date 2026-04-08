@@ -8,5 +8,5 @@ export default async function SignupPage({
   const { next } = await searchParams
   const nextPath = Array.isArray(next) ? next[0] : next
 
-  return <AuthForm mode="signup" nextPath={nextPath || '/'} />
+  return <AuthForm mode="signup" nextPath={nextPath || '/agents'} />
 }

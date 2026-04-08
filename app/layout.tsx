@@ -2,7 +2,10 @@ import type { Session } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { AuthProvider } from '@/components/auth/auth-provider'
+import { IrisGlobalChatbot } from '@/components/IrisGlobalChatbot'
+import { SiteFooter } from '@/components/layout/site-footer'
 import { createClient } from '@/lib/supabase/server'
+import { SiteBackground } from '@/components/ui/site-background'
 import './globals.css'
 
 const geistSans = Geist({
@@ -47,8 +50,15 @@ export default async function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <AuthProvider initialSession={initialSession}>{children}</AuthProvider>
+      <body className="relative min-h-full flex flex-col overflow-x-hidden bg-transparent">
+        <SiteBackground />
+        <div className="relative z-10 flex min-h-full flex-col">
+          <AuthProvider initialSession={initialSession}>
+            <main className="flex-1">{children}</main>
+            <SiteFooter />
+            <IrisGlobalChatbot />
+          </AuthProvider>
+        </div>
       </body>
     </html>
   )

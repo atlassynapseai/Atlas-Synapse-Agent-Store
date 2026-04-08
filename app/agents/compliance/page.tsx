@@ -102,7 +102,7 @@ export default function CompliancePage() {
   const risk = report ? RISK_CONFIG[report.overall_risk_level] : null
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] font-[family-name:var(--font-geist-sans)]">
+    <div className="page-noise min-h-screen bg-[#0a0a0f] font-[family-name:var(--font-geist-sans)]">
       <header className="border-b border-white/10 px-8 py-5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <AtlasLogo href="/agents" />
@@ -200,8 +200,8 @@ export default function CompliancePage() {
               <div className="h-2 bg-white/5 rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all ${report.compliance_score >= 80 ? 'bg-green-500' :
-                      report.compliance_score >= 60 ? 'bg-yellow-500' :
-                        report.compliance_score >= 40 ? 'bg-orange-500' : 'bg-red-500'
+                    report.compliance_score >= 60 ? 'bg-yellow-500' :
+                      report.compliance_score >= 40 ? 'bg-orange-500' : 'bg-red-500'
                     }`}
                   style={{ width: `${report.compliance_score}%` }}
                 />

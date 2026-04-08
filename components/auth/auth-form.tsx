@@ -8,9 +8,17 @@ import { createClient, isSupabaseConfigured } from '@/lib/supabase/client'
 
 type AuthMode = 'login' | 'signup'
 
+function normalizeNextPath(nextPath?: string) {
+  if (!nextPath || !nextPath.startsWith('/agents') || nextPath.startsWith('/agents/auth')) {
+    return '/agents'
+  }
+
+  return nextPath
+}
+
 export function AuthForm({
   mode,
-  nextPath = '/',
+  nextPath = '/agents',
 }: {
   mode: AuthMode
   nextPath?: string
@@ -24,10 +32,9 @@ export function AuthForm({
 
   const isLogin = mode === 'login'
   const configured = isSupabaseConfigured()
-  const loginHref = nextPath ? `/agents/auth?next=${encodeURIComponent(nextPath)}` : '/agents/auth'
-  const signupHref = nextPath
-    ? `/agents/auth?mode=signup&next=${encodeURIComponent(nextPath)}`
-    : '/agents/auth?mode=signup'
+  const safeNextPath = normalizeNextPath(nextPath)
+  const loginHref = `/agents/auth?next=${encodeURIComponent(safeNextPath)}`
+  const signupHref = `/agents/auth?mode=signup&next=${encodeURIComponent(safeNextPath)}`
 
   async function handleOAuth(provider: 'google' | 'github') {
     setError(null)
@@ -50,7 +57,7 @@ export function AuthForm({
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${redirectBase}/agents/auth/callback?next=${encodeURIComponent(nextPath)}`,
+        redirectTo: `${redirectBase}/agents/auth/callback?next=${encodeURIComponent(safeNextPath)}`,
       },
     })
 
@@ -79,7 +86,7 @@ export function AuthForm({
 
     const redirectBase = typeof window !== 'undefined' ? window.location.origin : ''
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${redirectBase}/agents/auth?next=${encodeURIComponent(nextPath)}`,
+      redirectTo: `${redirectBase}/agents/auth?next=${encodeURIComponent(safeNextPath)}`,
     })
 
     if (error) {
@@ -125,7 +132,7 @@ export function AuthForm({
         options: {
           emailRedirectTo:
             typeof window !== 'undefined'
-              ? `${window.location.origin}/agents/auth/callback?next=${encodeURIComponent(nextPath)}`
+              ? `${window.location.origin}/agents/auth/callback?next=${encodeURIComponent(safeNextPath)}`
               : undefined,
         },
       })
@@ -142,12 +149,12 @@ export function AuthForm({
       return
     }
 
-    router.replace(nextPath)
     router.refresh()
+    window.location.assign(safeNextPath)
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#08122d_0%,_#030816_45%,_#01040e_100%)] text-white">
+    <div className="page-noise min-h-screen bg-[radial-gradient(circle_at_top,_#08122d_0%,_#030816_45%,_#01040e_100%)] text-white">
       <header className="border-b border-cyan-500/10 bg-[#020817]/80 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <AtlasLogo href="/agents" className="rounded-full border border-cyan-400/30 bg-[#06112a] px-4 py-2 shadow-[0_0_24px_rgba(59,130,246,0.12)]" />
@@ -155,13 +162,13 @@ export function AuthForm({
           <div className="flex items-center gap-3">
             <Link
               href={loginHref}
-              className="rounded-full border border-slate-700 bg-[#081229] px-5 py-2 text-sm font-medium text-slate-100 transition-colors hover:border-sky-400/40"
+              className="pressable rounded-full border border-slate-700 bg-[#081229] px-5 py-2 text-sm font-medium text-slate-100 transition-colors hover:border-sky-400/40"
             >
               Login
             </Link>
             <Link
               href="/agents"
-              className="hidden rounded-full bg-gradient-to-r from-violet-500 to-sky-400 px-5 py-2 text-sm font-semibold text-slate-950 shadow-[0_10px_30px_rgba(56,189,248,0.25)] sm:inline-flex"
+              className="pressable hidden rounded-full bg-gradient-to-r from-violet-500 to-sky-400 px-5 py-2 text-sm font-semibold text-slate-950 shadow-[0_10px_30px_rgba(56,189,248,0.25)] sm:inline-flex"
             >
               Request Demo
             </Link>
@@ -170,22 +177,22 @@ export function AuthForm({
       </header>
 
       <div className="mx-auto flex min-h-[calc(100vh-76px)] max-w-7xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md rounded-[28px] border border-cyan-500/15 bg-[linear-gradient(180deg,rgba(7,17,40,0.98)_0%,rgba(4,10,24,0.98)_100%)] p-6 shadow-[0_0_60px_rgba(37,99,235,0.18)] sm:p-8">
+        <div className="float-card interactive-card w-full max-w-md rounded-[28px] border border-cyan-500/15 bg-[linear-gradient(180deg,rgba(7,17,40,0.98)_0%,rgba(4,10,24,0.98)_100%)] p-6 shadow-[0_0_60px_rgba(37,99,235,0.18)] sm:p-8">
           <div className="mb-6 flex rounded-2xl border border-slate-700 bg-[#0a1430] p-1">
             <Link
               href={loginHref}
-              className={`flex-1 rounded-xl px-4 py-3 text-center text-sm font-semibold transition-all ${isLogin
-                  ? 'bg-gradient-to-r from-violet-500 to-sky-400 text-white shadow-[0_8px_24px_rgba(96,165,250,0.25)]'
-                  : 'text-slate-400 hover:text-white'
+              className={`pressable flex-1 rounded-xl px-4 py-3 text-center text-sm font-semibold transition-all ${isLogin
+                ? 'bg-gradient-to-r from-violet-500 to-sky-400 text-white shadow-[0_8px_24px_rgba(96,165,250,0.25)]'
+                : 'text-slate-400 hover:text-white'
                 }`}
             >
               Sign In
             </Link>
             <Link
               href={signupHref}
-              className={`flex-1 rounded-xl px-4 py-3 text-center text-sm font-semibold transition-all ${!isLogin
-                  ? 'bg-gradient-to-r from-violet-500 to-sky-400 text-white shadow-[0_8px_24px_rgba(96,165,250,0.25)]'
-                  : 'text-slate-400 hover:text-white'
+              className={`pressable flex-1 rounded-xl px-4 py-3 text-center text-sm font-semibold transition-all ${!isLogin
+                ? 'bg-gradient-to-r from-violet-500 to-sky-400 text-white shadow-[0_8px_24px_rgba(96,165,250,0.25)]'
+                : 'text-slate-400 hover:text-white'
                 }`}
             >
               Create Account
@@ -211,7 +218,7 @@ export function AuthForm({
               type="button"
               onClick={() => handleOAuth('github')}
               disabled={submitting}
-              className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-700 bg-[#101b35] px-4 py-3 text-sm font-medium text-slate-100 transition-colors hover:border-sky-400/40 hover:bg-[#122141] disabled:cursor-not-allowed disabled:opacity-50"
+              className="pressable flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-700 bg-[#101b35] px-4 py-3 text-sm font-medium text-slate-100 transition-colors hover:border-sky-400/40 hover:bg-[#122141] disabled:cursor-not-allowed disabled:opacity-50"
             >
               <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current text-white" aria-hidden="true">
                 <path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.04c-3.34.73-4.04-1.42-4.04-1.42-.55-1.38-1.33-1.74-1.33-1.74-1.09-.74.08-.73.08-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.84 2.82 1.31 3.51 1 .11-.78.42-1.31.77-1.61-2.66-.3-5.47-1.33-5.47-5.9 0-1.3.46-2.36 1.22-3.19-.12-.3-.53-1.53.12-3.18 0 0 1-.32 3.3 1.22a11.3 11.3 0 0 1 6 0c2.3-1.54 3.3-1.22 3.3-1.22.65 1.65.24 2.88.12 3.18.76.83 1.22 1.89 1.22 3.19 0 4.58-2.82 5.59-5.5 5.89.43.37.82 1.1.82 2.23v3.3c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z" />
@@ -247,7 +254,7 @@ export function AuthForm({
                   <button
                     type="button"
                     onClick={handlePasswordReset}
-                    className="text-xs font-medium text-cyan-300 hover:text-cyan-200"
+                    className="interactive-link text-xs font-medium text-cyan-300 hover:text-cyan-200"
                   >
                     Forgot password?
                   </button>
@@ -279,7 +286,7 @@ export function AuthForm({
             <button
               type="submit"
               disabled={submitting}
-              className="flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-violet-500 to-sky-400 px-4 py-3 text-sm font-semibold text-white transition-transform hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+              className="pressable flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-violet-500 to-sky-400 px-4 py-3 text-sm font-semibold text-white transition-transform hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {submitting ? (isLogin ? 'Signing in...' : 'Creating account...') : (isLogin ? 'Sign In' : 'Create Account')}
             </button>

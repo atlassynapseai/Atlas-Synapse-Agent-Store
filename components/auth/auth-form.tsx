@@ -16,6 +16,29 @@ function normalizeNextPath(nextPath?: string) {
   return nextPath
 }
 
+function getPublicAppUrl() {
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return process.env.NEXT_PUBLIC_APP_URL
+  }
+
+  if (typeof window !== 'undefined') {
+    return `${window.location.origin}/agents`
+  }
+
+  return ''
+}
+
+function buildPublicAppUrl(path: string) {
+  const baseUrl = getPublicAppUrl()
+
+  if (!baseUrl) {
+    return path.startsWith('/') ? path : `/agents/${path}`
+  }
+
+  const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`
+  return new URL(path, normalizedBase).toString()
+}
+
 export function AuthForm({
   mode,
   nextPath = '/agents',
@@ -35,6 +58,9 @@ export function AuthForm({
   const safeNextPath = normalizeNextPath(nextPath)
   const loginHref = `/agents/auth?next=${encodeURIComponent(safeNextPath)}`
   const signupHref = `/agents/auth?mode=signup&next=${encodeURIComponent(safeNextPath)}`
+  const oauthCallbackUrl = buildPublicAppUrl(`auth/callback?next=${encodeURIComponent(safeNextPath)}`)
+  const authPageUrl = buildPublicAppUrl(`auth?next=${encodeURIComponent(safeNextPath)}`)
+  const destinationUrl = buildPublicAppUrl(safeNextPath)
 
   async function handleOAuth(provider: 'google' | 'github') {
     setError(null)
@@ -53,11 +79,10 @@ export function AuthForm({
 
     setSubmitting(true)
 
-    const redirectBase = typeof window !== 'undefined' ? window.location.origin : ''
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${redirectBase}/agents/auth/callback?next=${encodeURIComponent(safeNextPath)}`,
+        redirectTo: oauthCallbackUrl,
       },
     })
 
@@ -84,9 +109,8 @@ export function AuthForm({
 
     setSubmitting(true)
 
-    const redirectBase = typeof window !== 'undefined' ? window.location.origin : ''
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${redirectBase}/agents/auth?next=${encodeURIComponent(safeNextPath)}`,
+      redirectTo: authPageUrl,
     })
 
     if (error) {
@@ -130,10 +154,7 @@ export function AuthForm({
         email: email.trim(),
         password,
         options: {
-          emailRedirectTo:
-            typeof window !== 'undefined'
-              ? `${window.location.origin}/agents/auth/callback?next=${encodeURIComponent(safeNextPath)}`
-              : undefined,
+          emailRedirectTo: oauthCallbackUrl || undefined,
         },
       })
 
@@ -150,7 +171,7 @@ export function AuthForm({
     }
 
     router.refresh()
-    window.location.assign(safeNextPath)
+    window.location.assign(destinationUrl)
   }
 
   return (

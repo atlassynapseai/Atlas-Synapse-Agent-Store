@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { AuthNav } from '@/components/auth/auth-nav'
+import { AtlasLogo } from '@/components/brand/atlas-logo'
 
 type Party = { name: string; role: string }
 type KeyClause = { title: string; summary: string; clause_ref: string | null }
@@ -86,16 +87,16 @@ export default function ContractPage() {
     <div className="min-h-screen bg-[#0a0a0f] font-[family-name:var(--font-geist-sans)]">
       <header className="border-b border-white/10 px-8 py-5 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-sm font-bold text-white">A</div>
-            <span className="text-white font-semibold text-lg tracking-tight">Atlas Synapse</span>
-          </Link>
+          <AtlasLogo href="/agents" />
           <span className="text-white/20 mx-1">/</span>
           <span className="text-white/50 text-sm">Contract Analysis Agent</span>
         </div>
-        <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-full px-3 py-1.5">
-          <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
-          <span className="text-green-400 text-xs font-medium">Live</span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-full px-3 py-1.5">
+            <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+            <span className="text-green-400 text-xs font-medium">Live</span>
+          </div>
+          <AuthNav />
         </div>
       </header>
 

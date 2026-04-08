@@ -1,1 +1,101 @@
 @import "tailwindcss";
+
+:root {
+    color-scheme: dark;
+}
+
+body {
+    background: #050816;
+}
+
+@keyframes floatSlow {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes glowPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+    }
+
+    50% {
+        box-shadow: 0 0 28px rgba(59, 130, 246, 0.22);
+    }
+}
+
+@keyframes sheen {
+    0% {
+        transform: translateX(-140%);
+    }
+
+    100% {
+        transform: translateX(140%);
+    }
+}
+
+.page-noise {
+    position: relative;
+    overflow: hidden;
+}
+
+.page-noise::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.08), transparent 28%),
+        radial-gradient(circle at top right, rgba(168, 85, 247, 0.10), transparent 24%);
+}
+
+.hero-spotlight {
+    position: relative;
+}
+
+.hero-spotlight::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    width: 420px;
+    height: 420px;
+    transform: translateX(-50%);
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.18), transparent 68%);
+    filter: blur(10px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.hero-spotlight>* {
+    position: relative;
+    z-index: 1;
+}
+
+.float-card {
+    animation: floatSlow 6s ease-in-out infinite;
+}
+
+.glow-button {
+    position: relative;
+    overflow: hidden;
+    animation: glowPulse 3s ease-in-out infinite;
+}
+
+.glow-button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.18) 50%, transparent 100%);
+    transform: translateX(-140%);
+    animation: sheen 3.2s ease-in-out infinite;
+}

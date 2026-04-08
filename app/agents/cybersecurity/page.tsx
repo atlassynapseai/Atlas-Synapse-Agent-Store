@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { AuthNav } from '@/components/auth/auth-nav'
+import { AtlasLogo } from '@/components/brand/atlas-logo'
 
 type TimelineEntry = { timestamp: string; event: string }
 type RemediationStep = { priority: 'Immediate' | 'Short-term' | 'Long-term'; action: string; description: string }
@@ -54,7 +55,7 @@ export default function CybersecurityPage() {
     setError(null)
 
     try {
-      const res = await fetch('/api/analyze-threat', {
+      const res = await fetch('/api/analyze-security', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ input }),
@@ -80,16 +81,16 @@ export default function CybersecurityPage() {
       {/* Header */}
       <header className="border-b border-white/10 px-8 py-5 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-sm font-bold text-white">A</div>
-            <span className="text-white font-semibold text-lg tracking-tight">Atlas Synapse</span>
-          </Link>
+          <AtlasLogo href="/agents" />
           <span className="text-white/20 mx-1">/</span>
           <span className="text-white/50 text-sm">Cybersecurity Threat Agent</span>
         </div>
-        <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-full px-3 py-1.5">
-          <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
-          <span className="text-green-400 text-xs font-medium">Live</span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-full px-3 py-1.5">
+            <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+            <span className="text-green-400 text-xs font-medium">Live</span>
+          </div>
+          <AuthNav />
         </div>
       </header>
 
@@ -99,7 +100,7 @@ export default function CybersecurityPage() {
           <div className="text-4xl mb-4">🛡️</div>
           <h1 className="text-3xl font-bold text-white mb-3">Cybersecurity Threat Agent</h1>
           <p className="text-white/50 text-lg max-w-2xl">
-            Paste a security incident report, system log, or alert. The agent returns a full structured threat analysis with severity, attack vector, and remediation steps — powered by Gemini.
+            Paste a security incident report, system log, or alert. The agent returns a full structured threat analysis with severity, attack vector, and remediation steps — powered by Claude.
           </p>
         </div>
 

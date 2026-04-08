@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { AuthNav } from '@/components/auth/auth-nav'
+import { AtlasLogo } from '@/components/brand/atlas-logo'
 
 type Gap = {
   severity: 'Critical' | 'High' | 'Medium' | 'Low'
@@ -104,16 +105,16 @@ export default function CompliancePage() {
     <div className="min-h-screen bg-[#0a0a0f] font-[family-name:var(--font-geist-sans)]">
       <header className="border-b border-white/10 px-8 py-5 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-sm font-bold text-white">A</div>
-            <span className="text-white font-semibold text-lg tracking-tight">Atlas Synapse</span>
-          </Link>
+          <AtlasLogo href="/agents" />
           <span className="text-white/20 mx-1">/</span>
           <span className="text-white/50 text-sm">Regulatory Compliance Agent</span>
         </div>
-        <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-full px-3 py-1.5">
-          <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
-          <span className="text-green-400 text-xs font-medium">Live</span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-full px-3 py-1.5">
+            <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+            <span className="text-green-400 text-xs font-medium">Live</span>
+          </div>
+          <AuthNav />
         </div>
       </header>
 
@@ -198,11 +199,10 @@ export default function CompliancePage() {
               </div>
               <div className="h-2 bg-white/5 rounded-full overflow-hidden">
                 <div
-                  className={`h-full rounded-full transition-all ${
-                    report.compliance_score >= 80 ? 'bg-green-500' :
-                    report.compliance_score >= 60 ? 'bg-yellow-500' :
-                    report.compliance_score >= 40 ? 'bg-orange-500' : 'bg-red-500'
-                  }`}
+                  className={`h-full rounded-full transition-all ${report.compliance_score >= 80 ? 'bg-green-500' :
+                      report.compliance_score >= 60 ? 'bg-yellow-500' :
+                        report.compliance_score >= 40 ? 'bg-orange-500' : 'bg-red-500'
+                    }`}
                   style={{ width: `${report.compliance_score}%` }}
                 />
               </div>

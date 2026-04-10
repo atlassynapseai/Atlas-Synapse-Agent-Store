@@ -68,7 +68,7 @@ const highlights = [
   {
     value: 'Auth + logging',
     label: 'Production controls',
-    description: 'Protected execution backed by Supabase sessions and audit-friendly run history.',
+    description: 'Protected execution backed by Supabase sessions and audit-friendly saved activity.',
   },
 ]
 
@@ -80,6 +80,7 @@ export default function Home() {
           <AtlasLogo href="/agents" />
           <nav className="flex items-center gap-3 text-sm text-white/50 md:gap-4">
             <Link href="/agents" className="interactive-link text-white/90">Agent Store</Link>
+            <Link href="/agents/reports" className="interactive-link hidden sm:inline-flex">Reports</Link>
             <Link href="https://www.atlassynapseai.com/#solutions" className="interactive-link hidden sm:inline-flex">Docs</Link>
             <Link href="https://www.atlassynapseai.com/#pricing" className="interactive-link hidden sm:inline-flex">Pricing</Link>
             <AuthNav />
@@ -113,6 +114,12 @@ export default function Home() {
                   className="glow-button pressable inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-blue-500"
                 >
                   Explore agents ↓
+                </Link>
+                <Link
+                  href="/agents/reports"
+                  className="pressable inline-flex items-center gap-2 rounded-lg border border-cyan-500/20 bg-cyan-500/10 px-5 py-2.5 text-sm text-cyan-100 transition-all hover:-translate-y-0.5 hover:bg-cyan-500/15"
+                >
+                  View saved reports
                 </Link>
                 <Link
                   href="/agents/auth?mode=signup"

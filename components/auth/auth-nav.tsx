@@ -27,7 +27,13 @@ export function AuthNav() {
 
   if (user) {
     return (
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
+        <Link
+          href="/agents/reports"
+          className="pressable rounded-lg border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-xs text-cyan-200 transition-colors hover:border-cyan-400/30 hover:bg-cyan-500/15"
+        >
+          Reports
+        </Link>
         <span className="hidden sm:block max-w-44 truncate text-xs text-white/45">
           {user.email}
         </span>

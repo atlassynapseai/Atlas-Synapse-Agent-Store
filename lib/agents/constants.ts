@@ -1,0 +1,2 @@
+export const MAX_AGENT_INPUT_CHARS = 12000
+export const DEFAULT_AGENT_HISTORY_LIMIT = 5
